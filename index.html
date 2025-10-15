@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Matthew Schultz – Portfolio (Assignment 5)</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    /* =========================
+       THEME VARIABLES
+       ========================= */
+    :root {
+      --bg:#fdf7f1;
+      --card:#ffffff;
+      --text:#1a1a1a;
+      --muted:#4e5969;
+      --border:rgba(0,0,0,0.1);
+
+      --warm-1:255,214,165;
+      --warm-2:255,111,145;
+      --grad1:rgba(var(--warm-1),0.9);
+      --grad2:rgba(var(--warm-2),0.9);
+      --underline-grad1:rgba(255,214,165,1);
+      --underline-grad2:rgba(255,111,145,1);
+    }
+
+    body.dark {
+      --bg:#0a1324;
+      --card:#141d36;
+      --text:#f2f4ff;
+      --muted:#d5d9ec;
+      --border:rgba(255,255,255,0.18);
+
+      --cool-1:0,119,182;
+      --cool-2:105,48,195;
+      --grad1:rgba(var(--cool-1),0.9);
+      --grad2:rgba(var(--cool-2),0.9);
+      --underline-grad1:rgba(0,119,182,1);
+      --underline-grad2:rgba(105,48,195,1);
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      margin:0;
+      font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,Arial;
+      background:var(--bg);
+      color:var(--text);
+      padding-top:92px;
+      transition:background .8s ease,color .8s ease;
+    }
+
+    /* =========================
+       NAVBAR
+       ========================= */
+    .navbar-custom {
+      background:linear-gradient(90deg,var(--grad1),var(--grad2));
+      backdrop-filter:blur(12px) saturate(140%);
+      -webkit-backdrop-filter:blur(12px) saturate(140%);
+      border-bottom:1px solid var(--border);
+      box-shadow:0 10px 30px rgba(0,0,0,0.25);
+      transition:background 1s ease;
+    }
+    .navbar-brand:hover { text-decoration:none!important; }
+    .navbar-brand h1{font-family:"Poppins",sans-serif;color:#2a2a2a;}
+    .navbar-brand small{color:#333;}
+    body.dark .navbar-brand h1, body.dark .navbar-brand small{color:#fff;}
+
+    .navbar-custom .nav-link{
+      color:#2a2a2a;
+      font-weight:600;
+      position:relative;
+      margin:0 .6rem;
+      transition:color .25s ease, opacity .25s ease, text-shadow .25s ease;
+    }
+    body.dark .navbar-custom .nav-link{color:#fff;}
+    .navbar-custom .nav-link:hover{
+      text-shadow:0 0 6px var(--underline-grad1),0 0 10px var(--underline-grad2);
+    }
+
+    @keyframes gradmove{0%{background-position:0% 50%;}100%{background-position:100% 50%;}}
+    .navbar-custom .nav-link:not(.active)::after{
+      content:"";
+      position:absolute; left:0; bottom:-6px;
+      width:100%; height:2px;
+      background:linear-gradient(90deg,var(--underline-grad1),var(--underline-grad2));
+      background-size:200% 200%;
+      transform:scaleX(0);
+      transform-origin:left;
+      transition:transform .22s ease;
+      animation:gradmove 3s linear infinite;
+    }
+    .navbar-custom .nav-link:not(.active):hover::after{ transform:scaleX(1); }
+
+    .nav-indicator{
+      position:absolute;
+      bottom:-2px;
+      height:4px;
+      border-radius:4px;
+      background:linear-gradient(90deg,var(--underline-grad1),var(--underline-grad2));
+      background-size:200% 200%;
+      animation:gradmove 3s linear infinite;
+      box-shadow:0 0 8px 2px color-mix(in srgb,var(--underline-grad1) 50%, transparent);
+      transition:transform .45s cubic-bezier(.22,.61,.36,1), width .45s cubic-bezier(.22,.61,.36,1);
+      pointer-events:none;
+    }
+
+    /* =========================
+       CARD & SECTION ANIMATIONS
+       ========================= */
+    .card {
+      background:var(--card);
+      color:var(--text);
+      border:1px solid var(--border);
+      opacity:0;
+      transform:translateY(40px) scale(.98);
+      filter:blur(3px);
+      transition:opacity 0.9s ease, transform 0.9s ease, filter 0.9s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+    }
+    .card.visible {
+      opacity:1;
+      transform:translateY(0) scale(1);
+      filter:blur(0);
+    }
+    .card:hover {
+      transform:translateY(-8px);
+      box-shadow:0 10px 25px rgba(0,0,0,0.15),
+                  0 0 15px color-mix(in srgb,var(--underline-grad1) 35%, transparent);
+      border-color:color-mix(in srgb,var(--underline-grad2) 50%, transparent);
+    }
+    body.dark .card:hover {
+      box-shadow:0 10px 28px rgba(0,0,0,0.6),
+                  0 0 20px color-mix(in srgb,var(--underline-grad1) 40%, transparent);
+    }
+
+    .table {
+      --bs-table-bg: var(--card) !important;
+      --bs-table-color: var(--text) !important;
+      --bs-table-border-color: var(--border) !important;
+      background:var(--card)!important;
+      color:var(--text)!important;
+      border-color:var(--border)!important;
+      transition:all .6s ease;
+    }
+    .table-striped>tbody>tr:nth-of-type(odd)>*{
+      background-color:color-mix(in srgb,var(--card) 92%, var(--bg) 8%)!important;
+      color:var(--text)!important;
+    }
+    .table th, .table td {
+      color:var(--text)!important;
+      border-color:var(--border)!important;
+    }
+
+    .text-muted, .small.text-muted, small.text-muted { color:var(--muted)!important; }
+
+    .download-fixed{position:fixed;right:1.25rem;bottom:4.25rem;z-index:1050;}
+    #toTop{position:fixed;right:1.25rem;bottom:1.25rem;opacity:0;pointer-events:none;transition:opacity .3s ease;}
+    #toTop.show{opacity:1;pointer-events:auto;}
+
+    footer.site-footer {
+      background: linear-gradient(135deg, var(--grad1), var(--grad2));
+      color:#222;
+      border-top:1px solid var(--border);
+      transition:background .8s ease,color .8s ease;
+    }
+    body.dark footer.site-footer{ color:#fff; }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <header class="fixed-top">
+    <nav id="mainNav" class="navbar navbar-expand-lg navbar-custom">
+      <div class="container position-relative">
+        <a class="navbar-brand d-flex flex-column" href="#">
+          <h1 class="mb-0">Matthew Schultz</h1>
+          <small>Applied Computer Science • NAU</small>
+        </a>
+        <button id="themeToggle" class="btn theme-toggle ms-auto me-2">🌙</button>
+        <div class="collapse navbar-collapse" id="navCollapse">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0 position-relative" id="navList">
+            <li class="nav-item"><a class="nav-link active" href="#summary">Summary</a></li>
+            <li class="nav-item"><a class="nav-link" href="#education">Education</a></li>
+            <li class="nav-item"><a class="nav-link" href="#experience">Experience</a></li>
+            <li class="nav-item"><a class="nav-link" href="#skills">Skills</a></li>
+            <li class="nav-item"><a class="nav-link" href="#projects">Projects</a></li>
+            <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+            <span class="nav-indicator" id="navIndicator"></span>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Floating Buttons -->
+  <a id="downloadBtn" class="btn btn-lg btn-primary download-fixed shadow" href="Matthew_Schultz_Resume.pdf" download>📄 Download Resume</a>
+  <button id="toTop" class="btn btn-primary rounded-circle" title="Back to top">↑</button>
+
+  <!-- MAIN -->
+  <main class="container py-4">
+    <!-- Greeting -->
+    <section id="greeting" class="mb-5">
+      <div class="card text-center p-4 shadow-sm">
+        <h2 id="greetingText" class="h4 mb-0">Loading greeting...</h2>
+      </div>
+    </section>
+
+    <!-- Summary -->
+    <section id="summary" class="mb-5">
+      <div class="card"><div class="card-body">
+        <h2 class="h4">Summary</h2>
+        <p class="lead mb-0">
+          Hey there! I’m <strong>Matt Schultz</strong>, an Applied CS student at <em>NAU</em>.  
+          I love building clean, fast, and fun web projects that actually work, and look good doing it.
+        </p>
+      </div></div>
+    </section>
+
+    <!-- Education -->
+    <section id="education" class="mb-5">
+      <div class="card"><div class="card-body">
+        <h2 class="h5 mb-3">Education</h2>
+        <table class="table table-striped align-middle mb-0">
+          <thead>
+            <tr><th>Institution</th><th>Program</th><th class="text-end">Dates</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Northern Arizona University</td><td>Bachelor in Applied Computer Science</td><td class="text-end">2023–2027 (current)</td></tr>
+            <tr><td>Florence High School</td><td>High School Diploma</td><td class="text-end">2014–2018</td></tr>
+          </tbody>
+        </table>
+      </div></div>
+    </section>
+
+    <!-- Experience -->
+    <section id="experience" class="mb-5">
+      <div class="card"><div class="card-body">
+        <h2 class="h5 mb-3">Experience</h2>
+        <table class="table table-striped align-middle mb-0">
+          <thead>
+            <tr><th>Role</th><th>Organization</th><th class="text-end">Dates</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Web Development Student</td><td>NAU – CS212</td><td class="text-end">4 months (current)</td></tr>
+            <tr><td>Frontend Practice</td><td>Personal Projects</td><td class="text-end">Ongoing</td></tr>
+          </tbody>
+        </table>
+      </div></div>
+    </section>
+
+    <!-- Skills -->
+    <section id="skills" class="mb-5">
+      <div class="card"><div class="card-body">
+        <h2 class="h5 mb-3">Skills</h2>
+        <ul>
+          <li>HTML, CSS, JavaScript, Python</li>
+          <li>Bootstrap, GitHub, VS Code</li>
+          <li>Responsive Design, Accessibility, Teamwork</li>
+        </ul>
+      </div></div>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects" class="mb-5">
+      <h2 class="h4 mb-3">Projects</h2>
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-4">
+          <div class="card h-100">
+            <img src="project-random.jpg" class="card-img-top" alt="Random project screenshot" style="height:200px;object-fit:cover;">
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title">Random Project</h5>
+              <p class="card-text small text-muted mb-3">A fun front-end project focusing on responsive layouts and accessibility.</p>
+              <button class="btn btn-outline-primary btn-sm mt-auto" data-bs-toggle="modal" data-bs-target="#projectModal1">Check it out!</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Modal -->
+    <div class="modal fade" id="projectModal1" tabindex="-1" aria-labelledby="projectModal1Label" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background:var(--card);color:var(--text);border:1px solid var(--border);">
+          <div class="modal-header" style="border-color:var(--border);">
+            <h5 class="modal-title" id="projectModal1Label">Random Project Details</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <p>This project demonstrates layout and responsive design using HTML, CSS, and Bootstrap. Built for speed and simplicity.</p>
+            <ul>
+              <li>Tech used: HTML, CSS, Bootstrap</li>
+              <li>Focus: accessibility & design consistency</li>
+            </ul>
+          </div>
+          <div class="modal-footer" style="border-color:var(--border);">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact -->
+    <section id="contact" class="mb-5">
+      <div class="card"><div class="card-body">
+        <h2 class="h5 mb-2">Contact</h2>
+        <p>Email: <a href="mailto:mbs348@nau.edu">mbs348@nau.edu</a></p>
+        <p>Phone: <a href="tel:5207057644">520-705-7644</a></p>
+      </div></div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer py-3 bg-gradient text-center">
+    <small>&copy; 2025 Matthew Schultz • Designed with Bootstrap • Accessible • Responsive</small>
+  </footer>
+
+  <!-- JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
